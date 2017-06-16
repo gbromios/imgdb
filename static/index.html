@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="content-type">
+	<meta content="utf-8" http-equiv="encoding">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>the moon is chill</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" type="text/css">
+
+	<link rel="stylesheet" href="/s/css/reset.css" type="text/css">
+	<link rel="stylesheet" href="/s/css/style.css" type="text/css">
+	<link rel="stylesheet" href="/s/css/color-day.css" type="text/css" id="color-scheme">
+
+	<script src="https://use.typekit.net/ccx6kuk.js"></script>
+	<script>try{Typekit.load({ async: true });}catch(e){}</script>
+	<script data-main="/js/app" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+</head>
+<body>
+	<noscript><h2>now entering a strict no grandpa zone</h2><h1>wtf get javscript you ass</h1><h3>user-agent "Potato/1.6" forbidden</h3></noscript>
+	<script type="application/json" id="image-data"> [[IMAGES]] </script>
+	<script type="application/json" id="tag-data"> [[TAGS]] </script>
+	<div id="top-spacer"></div>
+
+	<script id="full-image-template" type="text/x-handlebars-template">
+		<ul class="taglist">{{#each tags}}
+			<a class="moonroute" href="/{{.}}">{{.}}</a>
+		{{/each}}</ul>
+		<img src="{{link.hash}}">
+	</script>
+
+	<script id="tile-image-template" type="text/x-handlebars-template">
+		<li class="tile" data-model-id="{{id}}">
+			<img src="{{link.thumb}}">
+		</li>
+	</script>
+
+	<script id="tag-list-template" type="text/x-handlebars-template">
+		{{#each .}}
+			<a class="moonroute" href="/{{name}}">{{name}}</a>
+		{{/each}}
+	</script>
+
+</body>
+</html>

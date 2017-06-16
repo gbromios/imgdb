@@ -1,0 +1,5 @@
+*.pyc
+*.swp
+*.swo
+js_app/lib
+node_modules/

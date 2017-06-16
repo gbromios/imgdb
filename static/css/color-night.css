@@ -1,0 +1,16 @@
+body {
+	color: white;
+	background-color: black;
+}
+
+#fixed-top-container {
+	background-color: black;
+}
+
+.fa, a {
+	color: white;
+}
+
+a:hover, .icon-btn:hover > .fa, h1.hover-label:hover {
+	color: #FEFCD7;
+}
