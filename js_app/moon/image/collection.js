@@ -96,7 +96,6 @@ function( _, Backbone, Image) {
 					at: null
 				}),
 				success: function(collection, response, options) {
-					console.log(response.paging);
 					collection._xhr = null;
 					if (success) {
 						success.apply(thisArg, arguments);
@@ -151,7 +150,6 @@ function( _, Backbone, Image) {
 					at: null
 				}),
 				success: function(collection, response, options) {
-					console.log(response.paging);
 					collection._xhr = null;
 					if (success) {
 						success.apply(thisArg, arguments);
@@ -159,7 +157,7 @@ function( _, Backbone, Image) {
 				},
 				error: function(c, r, o) {
 					if (error) {
-						console.log('getNextPage: our fetch errd out:' , r)
+						console.log('getPrevPage: our fetch errd out:' , r)
 						error.apply(thisArg, arguments);
 					}
 				},

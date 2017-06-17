@@ -1,84 +1,51 @@
 'use strict'
 define(
-[        'backbone', 'moon/query'],
-function( Backbone, Query) {
-	function mkbtn(id, fa, on) {
-		return $('<button class="icon-btn">')
-			.addClass('btn-' + id)
-			.click(on || function(){ return; })
-			.append( $('<span class="fa fa-3x">').addClass('fa-' + fa) )
-		;
-	}
-
+[        'backbone', 'handlebars', 'moon/query'],
+function( Backbone,   Handlebars,   Query) {
 	return Backbone.View.extend({
 		tagName: 'div',
 		id: 'fixed-top-container',
-		initialize: function(){},
+		initialize: function(){
+			this.template = Handlebars.compile($('#controls-template').html());
+			this.btn_partial = Handlebars.registerPartial(
+				'control-btn',
+				$('#control-btn-partial').html()
+			);
+		},
 		events: {
+			'click .btn-moon': function() {},
+			'click .btn-settings': function() {},
+			'click .btn-search': function() {},
+			'click .btn-tags': function() {
+				// go to the tag list
+				moon.navigate('/tags', {trigger: true});
+			},
+			'click .btn-back': function() {
+				// whatever the current address is, turn it to a list-version
+				moon.navigate(Query.fromLocation().listURL(), {trigger: true});
+			},
+			'click .btn-image': function() {},
+			'click .btn-prev': 'gotoPrevious',
+			'click .btn-next': 'gotoNext',
+			'click .btn-tag': function() {}
 		},
 		render: function() {
-			this.$el.append(
-				$('<a>')
-					.prop('href', '/')
-					.text('the moon is chill')
-					.addClass('moonroute main-link'),
-				$('<div>').addClass('btn-group btn-group-list').append(
-					mkbtn("moon", "moon-o"),
-					mkbtn("settings", "gear"),
-					mkbtn("search", "search"),
-					mkbtn("tags", "tags").attr('href', '/tags').addClass('moonroute')
-				),
-				$('<div>').addClass('btn-group btn-group-image').append(
-					mkbtn("back", "times", function(){
-						// whatever the current address is, turn it to a list-version
-						moon.navigate(Query.fromLocation().listURL(), {trigger: true});
-					}),
-					mkbtn("image", "image"),
-					mkbtn("prev", "arrow-left", function(){
-						var model = window.moon.image_view.model;
-						var i = moon.images.prevOf(model);
-						var query = Query.fromLocation();
-
-						if (i === null) {
-							console.log('hit a null previous image!');
-						} else if (i === -1) {
-							// we need to load this image. probably show the loader imo
-							window.moon.images.getPrevPage({
-								success: function(c, r, o) {
-									// goto whatever image we got first
-									window.moon.navigate(query.transform({}, moon.images.prevOf(model).id).imageURL(), {trigger: true});
-								}
-							});
-						} else {
-							window.moon.navigate(query.transform({}, i.id).imageURL(), {trigger: true});
-						}
-					}),
-					mkbtn("next", "arrow-right", function(){
-						var model = window.moon.image_view.model;
-						var i = moon.images.nextOf(model);
-						var query = Query.fromLocation();
-
-						if (i === null) {
-							console.log('hit a null next image!');
-						} else if (i === -1) {
-							// we need to load this image. probably show the loader imo
-							window.moon.images.getNextPage({
-								success: function(c, r, o) {
-									// goto whatever image we got first
-									window.moon.navigate(query.transform({}, r.data[0].id).imageURL(), {trigger: true});
-								}
-							});
-						} else {
-							window.moon.navigate(query.transform({}, i.id).imageURL(), {trigger: true});
-						}
-					}),
-					mkbtn('tagme', 'tag', function(){
-						var model = window.moon.image_view.model
-						window.open('/tagme/' + model.id, '_blank' );
-					})
-				)
-			);
-			return this;
+			return this.$el.append(this.template({
+				site_name: 'the moon is chill', // TODO site config or something
+				list_buttons: [
+					{ name: 'moon', icon: 'moon-o' },
+					{ name: 'settings', icon: 'gear' },
+					{ name: 'search', icon: 'search' },
+					{ name: 'tags', icon: 'tags' },
+				],
+				img_buttons: [
+					{ name: 'back', icon: 'times' },
+					{ name: 'image', icon: 'image' },
+					{ name: 'prev', icon: 'arrow-left' },
+					{ name: 'next', icon: 'arrow-right' },
+					{ name: 'tag', icon: 'tag' },
+				]
+			}));
 		},
 		gotoMode: function(mode) {
 			// list or full?
@@ -102,7 +69,41 @@ function( Backbone, Query) {
 			} else {
 			}
 		},
+		gotoPrevious: function() {
+			var model = window.moon.image_view.model;
+			var i = moon.images.prevOf(model);
+			var query = Query.fromLocation();
+
+			if (i === null) {
+				console.log('hit a null previous image!');
+			} else if (i === -1) {
+				// we need to load this image. probably show the loader imo
+				window.moon.images.getPrevPage({
+					success: function(c, r, o) {
+						window.moon.navigate(query.transform({}, moon.images.prevOf(model).id).imageURL(), {trigger: true});
+					}
+				});
+			} else {
+				window.moon.navigate(query.transform({}, i.id).imageURL(), {trigger: true});
+			}
+		},
+		gotoNext: function() {
+			var model = window.moon.image_view.model;
+			var i = moon.images.nextOf(model);
+			var query = Query.fromLocation();
+
+			if (i === null) {
+				console.log('hit a null next image!');
+			} else if (i === -1) {
+				// we need to load this image. probably show the loader imo
+				window.moon.images.getNextPage({
+					success: function(c, r, o) {
+						window.moon.navigate(query.transform({}, r.data[0].id).imageURL(), {trigger: true});
+					}
+				});
+			} else {
+				window.moon.navigate(query.transform({}, i.id).imageURL(), {trigger: true});
+			}
+		}
 	});
-
-
 });

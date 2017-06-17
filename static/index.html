@@ -41,5 +41,21 @@
 		{{/each}}
 	</script>
 
+	<script id="controls-template" type="text/x-handlebars-template">
+		<a class="main-link moonroute" href="/">{{site_name}}</a>
+		<div class="btn-group btn-group-list">
+		{{#each list_buttons}} {{> control-btn}} {{/each}}
+		</div>
+		<div class="btn-group btn-group-image">
+		{{#each img_buttons}} {{> control-btn}} {{/each}}
+		</div>
+	</script>
+
+	<script id="control-btn-partial" type="text/x-handlebars-template">
+		<button class="icon-btn btn-{{name}}">
+			<span class="fa fa-3x fa-{{icon}}"></span>
+		</button>
+	</script>
+
 </body>
 </html>

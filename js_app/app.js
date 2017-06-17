@@ -44,6 +44,9 @@ function (
 				query: Query.fromLocation()
 			});
 
+			this.tag_view = new TagView({collection: this.tags});
+			$('body').append(this.tag_view.$el.hide());
+
 			this.list_view = new ListView({collection: this.images});
 			$('body').append(this.list_view.$el.hide());
 
@@ -51,10 +54,7 @@ function (
 			$('body').append(this.image_view.$el.hide());
 
 			this.controls = new Controls();
-			$('body').append(this.controls.render().$el);
-
-			this.tag_view = new TagView({collection: this.tags});
-			$('body').append(this.tag_view.$el.hide());
+			$('body').append(this.controls.render());
 
 		},
 		routes: {
