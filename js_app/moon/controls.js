@@ -35,28 +35,40 @@ function( Backbone, Query) {
 					}),
 					mkbtn("image", "image"),
 					mkbtn("prev", "arrow-left", function(){
+						var model = window.moon.image_view.model;
+						var i = moon.images.prevOf(model);
+						var query = Query.fromLocation();
+
+						if (i === null) {
+							console.log('hit a null previous image!');
+						} else if (i === -1) {
+							// we need to load this image. probably show the loader imo
+							window.moon.images.getPrevPage({
+								success: function(c, r, o) {
+									// goto whatever image we got first
+									window.moon.navigate(query.transform({}, moon.images.prevOf(model).id).imageURL(), {trigger: true});
+								}
+							});
+						} else {
+							window.moon.navigate(query.transform({}, i.id).imageURL(), {trigger: true});
+						}
 					}),
 					mkbtn("next", "arrow-right", function(){
-						console.log('going to next image');
-
 						var model = window.moon.image_view.model;
-						console.log(model);
 						var i = moon.images.nextOf(model);
 						var query = Query.fromLocation();
 
-						if (i === null) { console.log('hit a null next image!'); return; }
-						if (i === -1) {
+						if (i === null) {
+							console.log('hit a null next image!');
+						} else if (i === -1) {
 							// we need to load this image. probably show the loader imo
-							console.log('we need to load our next image');
-							window.moon.images.getMore({
+							window.moon.images.getNextPage({
 								success: function(c, r, o) {
 									// goto whatever image we got first
-									console.log('loading', r.data[0].id);
 									window.moon.navigate(query.transform({}, r.data[0].id).imageURL(), {trigger: true});
 								}
 							});
 						} else {
-							console.log(i, query.transform({}, i.id).imageURL());
 							window.moon.navigate(query.transform({}, i.id).imageURL(), {trigger: true});
 						}
 					}),

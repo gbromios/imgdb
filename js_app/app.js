@@ -58,19 +58,13 @@ function (
 
 		},
 		routes: {
-			"settings": function() {
-				console.log('routed to settings');
-			},
 			"tags": function () {
-				console.log('routed to tag list');
 				this.tag_view.render();
 			},
 			"tagme(/*id)": function() {
-				console.log('routed to tagme');
 			},
 			"(:path)(?*search)": function(path, search) {
 				var query = new Query(deparam(search), path)
-				console.log('got query:', query);
 				window.qq = query;
 				window.QQ = Query;
 
@@ -100,7 +94,6 @@ function (
 			moon.navigate(path, {trigger: true})
 		});
 
-		//moon.on('route', function() {console.log('ONROUTE - ', arguments)});
 		Backbone.history.start({pushState: true, root: '/'});
 
 	});

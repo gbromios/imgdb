@@ -116,7 +116,7 @@ function($, _, deparam) {
 
 		// i.e. request 1 'page' of data by default
 		if (!args.count) {
-			args.count = 100;
+			args.count = 10;
 		}
 
 		// args can be overridden if desired. careful about sending count: null

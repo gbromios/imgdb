@@ -25,8 +25,7 @@ function( $,        Backbone,   Screen,        Tile ) {
 		},
 		scroll: function() {
 			if (Screen.bottomTile >= this.rows()) {
-				// get two more pages when we scroll to the bottom
-				this.collection.getMore();
+				this.collection.getNextPage();
 			}
 		},
 		render: function() {

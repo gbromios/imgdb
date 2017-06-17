@@ -108,7 +108,7 @@ class ImageHandler(gb.http.Handler):
 		# use a sane default
 		args = self.request_data
 		if 'count' not in args:
-			args['count'] = 100 # just a sane default pls
+			args['count'] = 10 # just a sane default pls
 		with open(self.app_root + '/static/index.html') as f:
 			document = ( f.read()
 				.replace('[[IMAGES]]', self.item_json(Image.browse(**args), Image.paging(**args)))
@@ -220,7 +220,7 @@ class ImageHandler(gb.http.Handler):
 		# TODO can get rid of this when paging is more sophisticated
 		args['at'] = Image.read(path).id
 		if not args.get('count', 0):
-			args['count'] = 100
+			args['count'] = 10
 
 		with open(self.app_root + '/static/index.html') as f:
 			document = ( f.read()
@@ -234,7 +234,7 @@ class ImageHandler(gb.http.Handler):
 	def get_images_tagged(self):
 		args = self.request_data
 		if 'count' not in args:
-			args['count'] = 100 # sanity default
+			args['count'] = 10 # sanity default
 		args['tag'] = self.split_path[0]
 		with open(self.app_root + '/static/index.html') as f:
 			document = ( f.read()
