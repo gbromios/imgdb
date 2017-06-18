@@ -1,4 +1,6 @@
-'use strict'
+;(function(){
+'use strict';
+
 require.config({
 	paths: {
 		jquery: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery',
@@ -12,26 +14,22 @@ require(
 [
 	'underscore',
 	'backbone',
-	'moon/image/collection',
-	'moon/image/list-view',
-	'moon/image/full-view',
-	'moon/tag/list-view',
+	'moon/image',
+	'moon/tag',
 	'moon/controls',
-	'moon/screen',
 	'moon/query',
-	'lib/jquery-deparam',
+	'moon/screen',
+	'lib/jquery-deparam'
 ],
 function (
 	_,
 	Backbone,
-	Images,
-	ListView,
-	ImageView,
-	TagView,
+	Image,
+	Tag,
 	Controls,
-	Screen,
 	Query,
-	deparam,
+	Screen,
+	deparam
 ) {
 	var Moon = Backbone.Router.extend({
 		initialize: function() {
@@ -39,46 +37,52 @@ function (
 			this.tags = new Backbone.Collection(window.JSON.parse(tagData.innerHTML));
 
 			var preload = window.JSON.parse(document.getElementById('image-data').innerHTML);
-			this.images = new Images(preload.items, {
+			this.images = new Image.Collection(preload.items, {
 				paging: preload.paging,
 				query: Query.fromLocation()
 			});
 
-			this.tag_view = new TagView({collection: this.tags});
+			// a list of all the tags
+			this.tag_view = new Tag.View.List({
+				tags: this.tags
+			});
 			$('body').append(this.tag_view.$el.hide());
 
-			this.list_view = new ListView({collection: this.images});
+			// list of current image thumbnails
+			this.list_view = new Image.View.List({
+				images: this.images,
+				screen: Screen.Window
+			});
 			$('body').append(this.list_view.$el.hide());
 
-			this.image_view = new ImageView();
+			// for viewing a whole image
+			this.image_view = new Image.View.Full({
+				images: this.images,
+				screen: Screen.Window
+			});
 			$('body').append(this.image_view.$el.hide());
 
-			this.controls = new Controls();
+			// controls at the top of the screen
+			this.controls = new Controls({
+				images: this.images
+			});
 			$('body').append(this.controls.render());
 
 		},
-		routes: {
+		routes: { // Query object doesn't really mesh nicely with routes tbh
 			"tags": function () {
 				this.tag_view.render();
 			},
 			"tagme(/*id)": function() {
+				// deprecated
 			},
 			"(:path)(?*search)": function(path, search) {
-				var query = new Query(deparam(search), path)
-				window.qq = query;
-				window.QQ = Query;
-
-				this.images.setQuery(query);
-
-				// could be an image or the list of images.
-				if (query.isImage) {
-					this.controls.gotoMode('full');
-					this.image_view.setImage(query); // might need to do more work for the id
-				} else {
-					this.controls.gotoMode('list');
-					this.list_view.render();
-				}
-
+				// TODO need some promises magic before these can be async. for now call
+				// Image.Collection.setQuery manually. c.f. Image.Collection.hasImage
+				var query = new Query(deparam(search), path);
+				console.log('wtf', query);
+				this.images.doQuery(query);
+				query.go();
 			},
 		}
 	});
@@ -90,8 +94,8 @@ function (
 				return;
 			}
 			e.preventDefault();
-			var path = $(this).attr('href')
-			moon.navigate(path, {trigger: true})
+			var path = $(this).attr('href');
+			moon.navigate(path, {trigger: true});
 		});
 
 		Backbone.history.start({pushState: true, root: '/'});
@@ -99,3 +103,5 @@ function (
 	});
 
 });
+
+})();

@@ -27,40 +27,46 @@ function( _, Backbone, Image) {
 			});
 		},
 
-		setQuery: function(query, options = {}) {
+		doQuery: function(query, args = {}) {
 			// TODO check: should i rload?
 			var last_query = this.query;
 			// don't think i need to verify new query, caveat emptor
 			this.query = query;
 
-			if (last_query && last_query.equals(query)) {
+			if (last_query && last_query.equals(query) && !args.page) {
 				// no need to reset our data.
+				if (args.success) {
+					args.success.apply(args.thisArg, arguments);
+				}
 			} else {
 				// we are resetting our dude.
-				this.reset();
-				this._xhr = null; // do I need to cancel the old one if it's in flight?
-				this._paging = null;
-
-				var success = options.success;
-				var error = options.error;
-				var thisArg = options.thisArg;
-				var this_collection = this;
+				if (!args.page) {
+					this.reset();
+				}
+				// TODO: if there's a request we either have to abandon it or wait for it.
+				if (this._xhr) {
+					console.log('current request overridden by new query');
+					this._xhr.abort('got new query.');
+					this._xhr = null;
+					this._paging = null;
+				}
 
 				this._xhr = this.fetch({
-					remove: false,
-					data: this.query.requestData(),
+					remove: args.remove || false, // this should proably actually be true by default
+					data: args.data || this.query.requestData(),
 					success: function(collection, response, options) {
-						collection._paging = response.paging;
 						collection._xhr = null;
-						if (success) {
-							success.apply(thisArg, arguments);
+						if (!args.page) {
+							collection._paging = response.paging;
+						}
+						if (args.success) {
+							args.success.apply(args.thisArg, arguments);
 						}
 					},
-					error: function(c, r, o) {
-						if (error) {
-							console.log('setQuery (load): our fetch errd out:' , r)
-							error.apply(thisArg, arguments);
-						}
+					error: function(collection, response, options) {
+						collection._xhr = null;
+						// not calling args.error callback yet b/c im lazy
+						console.log('doQuery (load): our fetch errd out:' , response);
 					},
 				});
 
@@ -73,7 +79,7 @@ function( _, Backbone, Image) {
 			return response.data;
 		},
 
-		getNextPage: function(options = {}) {
+		getNextPage: function(args = {}) {
 			// don't spam the server while pages are loading
 			if (this._xhr) {
 				return;
@@ -84,31 +90,13 @@ function( _, Backbone, Image) {
 				return;
 			}
 
-			var success = options.success;
-			var error = options.error;
-			var thisArg = options.thisArg;
-			var this_collection = this;
-
-			this._xhr = this.fetch({
-				remove: false,
+			return this.doQuery(this.query, Backbone.$.extend(args, {
+				page: true,
 				data: this.query.requestData({
-					after: this_collection.lastID,
+					after: this.lastID,
 					at: null
-				}),
-				success: function(collection, response, options) {
-					collection._xhr = null;
-					if (success) {
-						success.apply(thisArg, arguments);
-					}
-				},
-				error: function(c, r, o) {
-					if (error) {
-						console.log('getNextPage: our fetch errd out:' , r)
-						error.apply(thisArg, arguments);
-					}
-				},
-			});
-
+				})
+			}));
 		},
 
 		nextOf: function(model) {
@@ -127,7 +115,7 @@ function( _, Backbone, Image) {
 
 		},
 
-		getPrevPage: function(options = {}) {
+		getPrevPage: function(args = {}) {
 			// don't spam the server while pages are loading
 			if (this._xhr) {
 				return;
@@ -138,30 +126,13 @@ function( _, Backbone, Image) {
 				return;
 			}
 
-			var success = options.success;
-			var error = options.error;
-			var thisArg = options.thisArg;
-			var this_collection = this;
-
-			this._xhr = this.fetch({
-				remove: false,
+			return this.doQuery(this.query, Backbone.$.extend(args, {
+				page: true,
 				data: this.query.requestData({
-					before: this_collection.firstID,
+					before: this.firstID,
 					at: null
-				}),
-				success: function(collection, response, options) {
-					collection._xhr = null;
-					if (success) {
-						success.apply(thisArg, arguments);
-					}
-				},
-				error: function(c, r, o) {
-					if (error) {
-						console.log('getPrevPage: our fetch errd out:' , r)
-						error.apply(thisArg, arguments);
-					}
-				},
-			});
+				})
+			}));
 
 		},
 
@@ -178,7 +149,35 @@ function( _, Backbone, Image) {
 			} else {
 				return this.at(i - 1);
 			}
-		}
+		},
+
+		hasImage: function(id) {
+			var d = Backbone.$.Deferred();
+			var image = this.get(id);
+			var collection = this;
+
+			if (image) {
+				// we already have this image
+				d.resolve(image);
+			} else if (this._xhr) {
+				// we dont have this image, but the current api request is probably getting it.
+				this._xhr.done(function(response, status, xhr){
+					console.log('xhrdone', this, arguments)
+					var image = collection.get(id);
+					if (image) {
+						d.resolve(image);
+					} else {
+						d.reject('image "' + id + '" wasnt in the last request!');
+					}
+				});
+			} else {
+				d.reject('image "' + id + '" isnt in the collection and no request is in flight!');
+				// TODO annoying to extend collection backwards when using the back button 
+				// but i think i have a decent fix. back button makes it
+			}
+
+			return d.promise();
+		},
 
 	});
 });

@@ -6,14 +6,15 @@ function( Backbone,   Handlebars ){
 		id: 'tag-view',
 		className: 'main-view app-centered',
 		tagName: 'div',
-		events: { },
-		initialize: function() {
+		events: {},
+		initialize: function(options) {
+			Backbone.$.extend(this, options);
 			this.template = Handlebars.compile($('#tag-list-template').html());
 		},
 		render: function() {
 			if (!this.el.innerHTML) {
 				this.$el.append($(this.template(
-					_.map(moon.tags.models, function(t){ return t.attributes  })
+					_.map(this.tags.models, function(t){ return t.attributes  })
 				)));
 			}
 

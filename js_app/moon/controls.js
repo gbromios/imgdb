@@ -5,7 +5,8 @@ function( Backbone,   Handlebars,   Query) {
 	return Backbone.View.extend({
 		tagName: 'div',
 		id: 'fixed-top-container',
-		initialize: function(){
+		initialize: function(options){
+			Backbone.$.extend(this, options);
 			this.template = Handlebars.compile($('#controls-template').html());
 			this.btn_partial = Handlebars.registerPartial(
 				'control-btn',
@@ -70,39 +71,41 @@ function( Backbone,   Handlebars,   Query) {
 			}
 		},
 		gotoPrevious: function() {
-			var model = window.moon.image_view.model;
-			var i = moon.images.prevOf(model);
+			var model = window.moon.image_view.model; // TODO - THIS IS BAD.
+			var image = this.images.prevOf(model);
 			var query = Query.fromLocation();
 
-			if (i === null) {
+			if (image === null) {
+				// TODO when i implement prev/next detection, this wont happen
 				console.log('hit a null previous image!');
-			} else if (i === -1) {
+			} else if (image === -1) {
 				// we need to load this image. probably show the loader imo
-				window.moon.images.getPrevPage({
+				this.images.getPrevPage({
 					success: function(c, r, o) {
-						window.moon.navigate(query.transform({}, moon.images.prevOf(model).id).imageURL(), {trigger: true});
+						window.moon.navigate(query.transform({}, c.prevOf(model).id).imageURL(), {trigger: true});
 					}
 				});
 			} else {
-				window.moon.navigate(query.transform({}, i.id).imageURL(), {trigger: true});
+				window.moon.navigate(query.transform({}, image.id).imageURL(), {trigger: true});
 			}
 		},
 		gotoNext: function() {
 			var model = window.moon.image_view.model;
-			var i = moon.images.nextOf(model);
+			var image = this.images.nextOf(model);
 			var query = Query.fromLocation();
 
-			if (i === null) {
+			if (image === null) {
+				// TODO when i implement prev/next detection, this wont happen
 				console.log('hit a null next image!');
-			} else if (i === -1) {
+			} else if (image === -1) {
 				// we need to load this image. probably show the loader imo
-				window.moon.images.getNextPage({
+				this.images.getNextPage({
 					success: function(c, r, o) {
 						window.moon.navigate(query.transform({}, r.data[0].id).imageURL(), {trigger: true});
 					}
 				});
 			} else {
-				window.moon.navigate(query.transform({}, i.id).imageURL(), {trigger: true});
+				window.moon.navigate(query.transform({}, image.id).imageURL(), {trigger: true});
 			}
 		}
 	});

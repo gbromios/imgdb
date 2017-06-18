@@ -1,8 +1,14 @@
-'use strict'
+'use strict';
 
-define(
-['jquery', 'underscore', 'lib/jquery-deparam'],
-function($, _, deparam) {
+define([
+		'backbone',
+		'underscore',
+		'lib/jquery-deparam'
+],
+function(
+		Backbone,
+		_,
+		deparam) {
 	var Query = function(args, path) {
 		this.args = args || {};
 		this.path = path || '';
@@ -12,7 +18,13 @@ function($, _, deparam) {
 			isImage: { get: () => this._isImage() },
 			imageID: { get: () => this._imageID() }
 		});
+	}
 
+	Backbone.$.extend(Query, Backbone.Events);
+
+	Query.prototype.go = function() {
+		// if I ever want to extend query beyond these two cases, I'll subclass it
+		return Query.trigger(this.isImage ? 'goto.moon.img' : 'goto.moon.list', this);
 	};
 
 	Query.prototype._isTag = function() {
@@ -25,7 +37,7 @@ function($, _, deparam) {
 		} else {
 			return false;
 		}
-	}
+	};
 
 	Query.prototype._isImage = function() {
 		// looks at the path to determine if this is an image
@@ -38,7 +50,7 @@ function($, _, deparam) {
 		} else {
 			return false;
 		}
-	}
+	};
 
 	Query.prototype._imageID = function() {
 		if (this.isImage) {
@@ -73,7 +85,7 @@ function($, _, deparam) {
 			throw "not enough information to make an image url: need an id in the path OR an at argument"
 		}
 
-		var search = $.param(args)
+		var search = Backbone.$.param(args)
 		if (search) {
 			path += '?' + search;
 		}
@@ -98,7 +110,7 @@ function($, _, deparam) {
 			delete args.tag;
 		}
 
-		var search = $.param(args)
+		var search = Backbone.$.param(args)
 		if (search) {
 			path += '?' + search;
 		}
@@ -144,7 +156,7 @@ function($, _, deparam) {
 	Query.prototype.transform = function(args, path) {
 		var args = _.extend(this.args, args);
 		return new Query(args, String(path));
-	}
+	};
 
 	Query.fromLocation = function() {
 		// remove leading question mark and turn query string into an object
@@ -161,11 +173,11 @@ function($, _, deparam) {
 
 		return new Query(args, path);
 
-	}
+	};
 
 	Query.fromURL = function () {
 		// NYI - takes a whole url string and parses out pathname/search
-	}
+	};
 
 	return Query;
 

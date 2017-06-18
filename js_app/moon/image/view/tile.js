@@ -19,6 +19,7 @@ function( Backbone,   Handlebars,   deparam ) {
 		},
 		openImage: function(e){
 			var path = '/' + this.model.id;
+			// in list mode there might be a path, if there is, it's the tag
 			var tag = window.location.pathname.replace(/^\/+|\/+$/g, '');
 			var args = deparam(window.location.search.slice(1));
 			if (tag) {
