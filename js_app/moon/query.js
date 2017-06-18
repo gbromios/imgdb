@@ -126,7 +126,6 @@ function(
 			args.tag = this.path
 		}
 
-		// i.e. request 1 'page' of data by default
 		if (!args.count) {
 			args.count = 10;
 		}

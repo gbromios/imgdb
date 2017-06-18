@@ -36,6 +36,8 @@ function (
 			var tagData = document.getElementById('tag-data');
 			this.tags = new Backbone.Collection(window.JSON.parse(tagData.innerHTML));
 
+			var screen = new Screen();
+
 			var preload = window.JSON.parse(document.getElementById('image-data').innerHTML);
 			this.images = new Image.Collection(preload.items, {
 				paging: preload.paging,
@@ -51,14 +53,14 @@ function (
 			// list of current image thumbnails
 			this.list_view = new Image.View.List({
 				images: this.images,
-				screen: Screen.Window
+				screen: screen
 			});
 			$('body').append(this.list_view.$el.hide());
 
 			// for viewing a whole image
 			this.image_view = new Image.View.Full({
 				images: this.images,
-				screen: Screen.Window
+				screen: screen
 			});
 			$('body').append(this.image_view.$el.hide());
 
@@ -67,20 +69,22 @@ function (
 				images: this.images
 			});
 			$('body').append(this.controls.render());
+			// i think this can just go in controls.render()
+			$('.btn-group').hide();
 
 		},
 		routes: { // Query object doesn't really mesh nicely with routes tbh
 			"tags": function () {
 				this.tag_view.render();
+				this.controls.listMode(); // cough
 			},
 			"tagme(/*id)": function() {
-				// deprecated
+				// deprecated... for now.
 			},
 			"(:path)(?*search)": function(path, search) {
 				// TODO need some promises magic before these can be async. for now call
 				// Image.Collection.setQuery manually. c.f. Image.Collection.hasImage
 				var query = new Query(deparam(search), path);
-				console.log('wtf', query);
 				this.images.doQuery(query);
 				query.go();
 			},

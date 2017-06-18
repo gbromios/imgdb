@@ -6,8 +6,13 @@ function( _, Backbone, Image) {
 	return Backbone.Collection.extend({
 		url: '/i',
 		model: Image,
-		comparator: 'id',
-
+		comparator: function(a, b) {
+			if (this.query.args.order === 'random' || a.id < b.id) {
+				return -1;
+			} else {
+				return 1;
+			}
+		},
 		initialize: function(models, options) {
 			this._paging = options.paging; // required
 			this.query = options.query; // required
@@ -79,7 +84,7 @@ function( _, Backbone, Image) {
 			return response.data;
 		},
 
-		getNextPage: function(args = {}) {
+		getNextPage: function(args = { data: {} }) {
 			// don't spam the server while pages are loading
 			if (this._xhr) {
 				return;
@@ -90,12 +95,14 @@ function( _, Backbone, Image) {
 				return;
 			}
 
+			var data = _.extend(this.query.requestData({
+				after: this.lastID,
+				at: null
+			}), args.data);
+
 			return this.doQuery(this.query, Backbone.$.extend(args, {
 				page: true,
-				data: this.query.requestData({
-					after: this.lastID,
-					at: null
-				})
+				data: data
 			}));
 		},
 
@@ -115,7 +122,7 @@ function( _, Backbone, Image) {
 
 		},
 
-		getPrevPage: function(args = {}) {
+		getPrevPage: function(args = { data: {} }) {
 			// don't spam the server while pages are loading
 			if (this._xhr) {
 				return;
@@ -126,12 +133,14 @@ function( _, Backbone, Image) {
 				return;
 			}
 
+			var data = _.extend(this.query.requestData({
+				before: this.firstID,
+				at: null
+			}), args.data);
+
 			return this.doQuery(this.query, Backbone.$.extend(args, {
 				page: true,
-				data: this.query.requestData({
-					before: this.firstID,
-					at: null
-				})
+				data: data
 			}));
 
 		},

@@ -3,8 +3,8 @@ define(
 [        'jquery', 'underscore', 'backbone'],
 function( $,        _,            Backbone ) {
 	var Screen = function(element){
-		$(window).on('resize', _.debounce(this._resize, 500));
-		$(window).on('DOMMouseScroll mousewheel', this._scroll);
+
+		this.tileSize = 128; // TODO set this more wisely
 
 		this.$el = $(element || window);
 
@@ -15,7 +15,7 @@ function( $,        _,            Backbone ) {
 			// good for $(window)) but it will work out for what it's needed for
 			spacer: { get: () => $('#fixed-top-container').height() },
 			imageWidth: { get: () => this.width - 32 },
-			imageHeight: { get: () => this.height - this.spacer - 16 },
+			imageHeight: { get: () => this.height - this.spacer - 44 },
 			fullHeight: { get: () => $(document).height() },
 			top: { get: () => this.$el.scrollTop() }, // will this work on non window?
 			bottom: { get: () => this.top + this.height },
@@ -32,18 +32,18 @@ function( $,        _,            Backbone ) {
 			atTop: { get: () => this.top === 0 }, // TODO - account for fixed top header
 			toBottom: { get: () => this.bottom - this.fullHeight }
 		});
+
+		_.extend(this, Backbone.Events);
+		$(window).on('resize', _.debounce(this._resize.bind(this), 500));
+		$(window).on('DOMMouseScroll mousewheel', this._scroll.bind(this));
+
 	};
-	$.extend(Screen, Backbone.Events, {
-		// offer a singleton Whole-Window version for convenience
-		Window: new Screen(),
-		tileSize: 128, // TODO set this more wisely
-		_resize: function() {
-			this.trigger('resize.moon', this)
-		},
-		_scroll: function() {
-			this.trigger('scroll.moon', this)
-		}
-	});
+	Screen.prototype._resize = function() {
+		this.trigger('resize.moon', this)
+	};
+	Screen.prototype._scroll = function() {
+		this.trigger('scroll.moon', this)
+	};
 
 	return Screen;
 

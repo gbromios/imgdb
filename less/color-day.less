@@ -15,6 +15,10 @@ body {
 	color: @fg;
 }
 
-a:hover, .icon-btn:hover > .fa, h1.hover-label:hover {
+a:hover, .icon-btn:hover > span, h1.hover-label:hover {
 	color: @link;
+}
+
+.icon-btn:disabled > span.fa {
+	color: #888888;
 }

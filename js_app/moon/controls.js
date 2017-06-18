@@ -7,11 +7,16 @@ function( Backbone,   Handlebars,   Query) {
 		id: 'fixed-top-container',
 		initialize: function(options){
 			Backbone.$.extend(this, options);
+			this.mode = null;
 			this.template = Handlebars.compile($('#controls-template').html());
 			this.btn_partial = Handlebars.registerPartial(
 				'control-btn',
 				$('#control-btn-partial').html()
 			);
+
+			this.listenTo(Query, 'goto.moon.img', this.imageMode);
+			this.listenTo(Query, 'goto.moon.list', this.listMode);
+
 		},
 		events: {
 			'click .btn-moon': function() {},
@@ -48,26 +53,41 @@ function( Backbone,   Handlebars,   Query) {
 				]
 			}));
 		},
-		gotoMode: function(mode) {
-			// list or full?
-			if (mode === this.mode) {
-				return;
-			} else {
-				this.mode = mode;
+		imageMode: function(query) {
+			if (this.mode !== 'image') {
+				self.mode = 'image';
+				$('.btn-group-list').stop().animate({'width':0}, 200);
+				$('.btn-group-image').stop().delay(210).animate({'width':335}, 200);
 			}
+			// make sure the buttons are in the right state.
+			$('.btn-next, .btn-prev').prop('disabled', true);
 
-			// todo: i think on mobile mode, going to image mode hides the main title
+			var model = this.images.get(query.imageID);
 
-			if (mode === 'full') {
-				// show controls for a single image
-				//$('.btn-group-list').stop().animate({'width':0}, 300);
-				//$('.btn-group-image').stop().delay(10).animate({'width':256}, 300);
-				
-			} else if (mode === 'list') {
-				//$('.btn-group-image').stop().animate({'width':0}, 300);
-				//$('.btn-group-list').stop().delay(10).animate({'width':256}, 300);
-				// show controls for the list of images
+			// did we get a model from the image collection?
+			if (model) {
+				this.togglePrevNext(model);
 			} else {
+				var controls = this;
+				this.images.hasImage(query.imageID).then(function(model){
+					controls.togglePrevNext(model);
+				});
+			}
+			return this;
+		},
+		togglePrevNext: function(image) {
+			if (this.images.nextOf(image) !== null) {
+				$('.btn-next').prop('disabled', false);
+			}
+			if (this.images.prevOf(image) !== null) {
+				$('.btn-prev').prop('disabled', false);
+			}
+		},
+		listMode: function() {
+			if (this.mode !== 'list') {
+				self.mode = 'list';
+				$('.btn-group-image').stop().animate({'width':0}, 200);
+				$('.btn-group-list').stop().delay(210).animate({'width':268}, 200);
 			}
 		},
 		gotoPrevious: function() {

@@ -7,16 +7,9 @@ function( Backbone,   Handlebars,   Query) {
 		className: 'main-view',
 		tagName: 'div',
 		events: {
+			'click #full-image': function(e) { console.log('eat it');},
 			'load #full-image > img': function(e) {
-				var image = $(e.target);
-				image.removeAttr('style');
-				if (image.width() > Screen.imageWidth) {
-					image.css('width', Screen.imageWidth);
-				}
-				if (image.height() > Screen.imageHeight) {
-					image.removeAttr('style');
-					image.css('height', Screen.imageHeight);
-				}
+				console.log('what gives');
 			}
 		},
 		initialize: function(options) {
@@ -25,6 +18,7 @@ function( Backbone,   Handlebars,   Query) {
 			// i dont think i can put this under the normal events attribute
 
 			this.listenTo(Query, 'goto.moon.img', this.go);
+			this.img_selector = '#full-image > img';
 
 		},
 		go: function(query) {
@@ -37,10 +31,8 @@ function( Backbone,   Handlebars,   Query) {
 			// did we get a model from the image collection?
 			if (model) {
 				// update our model and re-render if the model changed.
-				if (!this.model || model.id !== this.model.id) {
-					this.model = model;
-					this.render();
-				}
+				this.model = model;
+				this.render();
 			} else {
 				// TODO show loading spinner.
 				this.model = null;
@@ -56,6 +48,22 @@ function( Backbone,   Handlebars,   Query) {
 			}
 			return this;
 		},
+		fit: function() {
+			var image = $(this.img_selector);
+			console.log(image, this.img_selector)
+			image.removeAttr('style');
+
+			console.log(image.width(), this.screen.imageWidth);
+
+			if (image.width() > this.screen.imageWidth) {
+				image.css('width', this.screen.imageWidth);
+			}
+			if (image.height() > this.screen.imageHeight) {
+				image.removeAttr('style');
+				image.css('height', this.screen.imageHeight);
+			}
+
+		},
 		render: function() {
 			$('.main-view:not(#full-image)').hide();
 			if (!this.model) {
@@ -68,10 +76,27 @@ function( Backbone,   Handlebars,   Query) {
 
 			this.$el.empty().append(this.template(this.model.attributes));
 
-			$(this.img_selector).on('load', function(e){ this.fit(e); })
+			$(this.img_selector).on('load', function(e){ this.fit(); }.bind(this))
 
 			this.$el.show();
 			return this;
 		},
+		loaded: function() {
+			if (!$(this.img_selector).length) {
+				return false;
+			}
+			var img = $(this.img_selector)[0];
+
+			if (!img.complete) {
+				return false;
+			}
+
+			if (typeof img.naturalWidth !== "undefined" && img.naturalWidth === 0) {
+				return false;
+			}
+
+			return true;
+
+		}
 	});
 });

@@ -33,9 +33,11 @@ function( Backbone,   Query,        Tile ) {
 			this.$el.empty();
 			this._begin = null;
 		},
-		scroll: function() {
-			if (this.screen.bottomTile >= this.rows()) {
-				this.images.getNextPage();
+		scroll: function(screen) {
+			if (this.$el.is(':visible') && screen.bottomTile >= this.rows())  {
+				// TODO try to make it even out the rows
+				// TODO also support scrolling up tbh
+				this.images.getNextPage({ data: { count: screen.tileCapacity } });
 			}
 		},
 		render: function() {

@@ -43,10 +43,10 @@
 
 	<script id="controls-template" type="text/x-handlebars-template">
 		<a class="main-link moonroute" href="/">{{site_name}}</a>
-		<div class="btn-group btn-group-list">
+		<div class="btn-group btn-group-list" style="width: 0">
 		{{#each list_buttons}} {{> control-btn}} {{/each}}
 		</div>
-		<div class="btn-group btn-group-image">
+		<div class="btn-group btn-group-image" style="width: 0">
 		{{#each img_buttons}} {{> control-btn}} {{/each}}
 		</div>
 	</script>

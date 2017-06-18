@@ -10,7 +10,10 @@ a {
   color: black;
 }
 a:hover,
-.icon-btn:hover > .fa,
+.icon-btn:hover > span,
 h1.hover-label:hover {
   color: #00A1EF;
+}
+.icon-btn:disabled > span.fa {
+  color: #888888;
 }
