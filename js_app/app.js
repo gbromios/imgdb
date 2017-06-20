@@ -10,8 +10,7 @@ require.config({
 	}
 });
 
-require(
-[
+require([
 	'underscore',
 	'backbone',
 	'moon/image',
@@ -20,8 +19,7 @@ require(
 	'moon/query',
 	'moon/screen',
 	'lib/jquery-deparam'
-],
-function (
+], function (
 	_,
 	Backbone,
 	Image,
@@ -65,7 +63,7 @@ function (
 			$('body').append(this.image_view.$el.hide());
 
 			// controls at the top of the screen
-			this.controls = new Controls({
+			this.controls = new Controls.Top({
 				images: this.images
 			});
 			$('body').append(this.controls.render());
@@ -85,6 +83,7 @@ function (
 				// TODO need some promises magic before these can be async. for now call
 				// Image.Collection.setQuery manually. c.f. Image.Collection.hasImage
 				var query = new Query(deparam(search), path);
+				console.log('pls go', query)
 				this.images.doQuery(query);
 				query.go();
 			},
@@ -99,7 +98,7 @@ function (
 			}
 			e.preventDefault();
 			var path = $(this).attr('href');
-			moon.navigate(path, {trigger: true});
+			window.moon.navigate(path, {trigger: true});
 		});
 
 		Backbone.history.start({pushState: true, root: '/'});

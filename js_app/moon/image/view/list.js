@@ -1,4 +1,6 @@
-'use strict'
+;(function(){
+'use strict';
+
 define(
 [        'backbone', 'moon/query', 'moon/image/view/tile'],
 function( Backbone,   Query,        Tile ) {
@@ -84,3 +86,5 @@ function( Backbone,   Query,        Tile ) {
 	});
 
 });
+
+})();

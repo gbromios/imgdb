@@ -1,4 +1,6 @@
-'use strict'
+;(function(){
+'use strict';
+
 define(
 [        'jquery', 'underscore', 'backbone'],
 function( $,        _,            Backbone ) {
@@ -122,3 +124,4 @@ function( $,        _,            Backbone ) {
 	}
 });
 
+})();

@@ -15,7 +15,7 @@ class ImageHandler(gb.http.Handler):
 
 	@property
 	def allowed(self):
-		# TODO: actual permissions
+		# TODO: actual permissions middleware (if I ever want other people to have write)
 		return self.client_address[0] in self.whitelist
 
 	def handle_one_request(self):
@@ -98,6 +98,7 @@ class ImageHandler(gb.http.Handler):
 		except IOError:
 			return Reply.text(404, 'cant find ' + '/'.join(self.split_path[1:]))
 
+	# robots gtfo
 	@route('GET', '/robots.txt')
 	def get_robots(self):
 		return Reply.text(200, 'User-agent: *\nDisallow: /')
@@ -192,27 +193,10 @@ class ImageHandler(gb.http.Handler):
 			# i choose this for the default thumb. make it configurable later.
 			return self.image_source.thumb_reply('00739fe818a1a764328371b7bbb2ad072367f1e3')
 
-	@route('GET','/[\d]{1,8}', 20)
-	def get_one_image_id(self):
-		return self.get_one_image()
-
+	@route('GET','/[\d]{3,8}', 20)
 	@route('GET','/[^/]+\..{3,4}')
-	def get_one_image_name(self):
-		return self.get_one_image()
-
 	@route('GET','/[a-z0-9]{40}')
-	def get_one_image_hash(self):
-		return self.get_one_image()
-
-	@route('GET', '/tagme/.+', 20)
-	def get_untagged_id(self):
-		return self.get_one_image(self.split_path[1])
-
-	@route('GET', '/tagme/?', 20)
-	def get_untagged(self):
-		return self.get_one_image(Image.get_untagged().id)
-
-	def get_one_image(self, path = None):
+	def get_image(self, path = None):
 		if path is None:
 			path = self.split_path[0]
 
@@ -265,14 +249,3 @@ class ImageHandler(gb.http.Handler):
 		except Exception as e:
 			return Reply.json(400, dict(message='bad request /ti' + str(e), request=self.request_data))
 
-	@route('POST', '/tc')
-	def tag_category(self):
-		assert self.allowed
-		tid = int(self.request_data['tag_id'])
-		cid = str(self.request_data['category'])
-		try:
-			tag = Tag.read(tid)
-			tag.set_category(cid)
-			return Reply.text(200, "success! {0} is {1}".format(tag.name, cid))
-		except Exception as e:
-			return Reply.text(500, "error: {0}".format(e))

@@ -49,6 +49,7 @@
 		<div class="btn-group btn-group-image" style="width: 0">
 		{{#each img_buttons}} {{> control-btn}} {{/each}}
 		</div>
+		<a target="_blank" class="name-link" href=""></a>
 	</script>
 
 	<script id="control-btn-partial" type="text/x-handlebars-template">
@@ -56,6 +57,14 @@
 			<span class="fa fa-3x fa-{{icon}}"></span>
 		</button>
 	</script>
+
+	<script id="search-bar-template" type="text/x-handlebars-template">
+		<input type="text" value="{{ . }}">
+		{{> control-btn name="search-submit" icon="search" }}
+		{{> control-btn name="search-clear" icon="times" }}
+	</script>
+
+
 
 </body>
 </html>

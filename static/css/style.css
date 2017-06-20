@@ -28,7 +28,6 @@ noscript > h3 {
   z-index: 9000;
   height: 64px;
   /*height: 128px;  height of page-controls */
-  background-color: blue;
 }
 .icon-btn {
   height: 64px;
@@ -195,4 +194,36 @@ div#admin-area {
   height: 64px;
   display: inline-block;
   overflow: hidden;
+}
+#image-info {
+  overflow-x: hidden;
+  vertical-align: middle;
+  width: 100%;
+  text-align: left;
+  padding-left: 16px;
+  z-index: 9000;
+  height: 64px;
+}
+a.name-link {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 2.5em;
+  height: 64px;
+  line-height: 64px;
+}
+#search-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 9002;
+}
+#search-bar input {
+  position: relative;
+  top: 7px;
+  font-family: inherit;
+  font-size: 24px;
+  height: 32px;
+  width: 256px;
 }

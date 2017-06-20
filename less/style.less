@@ -21,9 +21,7 @@ noscript > h2, noscript > h3 { font-size: 2.5em; color: #993311; }
 	z-index: 9000;
 	height: @header-height;
 	/*height: 128px;  height of page-controls */
-	background-color: blue;
 }
-
 .icon-btn {
 	height:@header-height;
 	width:64px;
@@ -219,3 +217,40 @@ div#admin-area {
 	display: inline-block;
 	overflow: hidden;
 }
+
+#image-info {
+	overflow-x: hidden;
+	vertical-align: middle;
+	width: 100%;
+	text-align: left;
+	padding-left: 16px;
+	z-index: 9000;
+	height: @header-height;
+}
+
+a.name-link {
+	display: inline-block;
+	white-space: nowrap;
+	font-size:2.5em;
+	height: @header-height;
+	line-height: @header-height;
+}
+
+#search-bar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 9002;
+	input {
+		position: relative;
+		top: 7px;
+		font-family: inherit;
+		font-size: 24px;
+		height: 32px;
+		width: 256px;
+	}
+}
+
+

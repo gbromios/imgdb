@@ -1,7 +1,12 @@
-'use strict'
-define(
-[        'backbone'],
-function( Backbone ) {
-	return Backbone.Model.extend({
-	});
+;(function(){
+'use strict';
+
+define([
+		'backbone'
+], function(
+		Backbone
+) {
+	return Backbone.Model.extend({ });
 });
+
+})();

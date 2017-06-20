@@ -1,4 +1,6 @@
-'use strict'
+;(function(){
+'use strict';
+
 define([
 		'backbone',
 		'moon/image/model',
@@ -17,3 +19,4 @@ define([
 	}, Backbone.Events);
 });
 
+})();

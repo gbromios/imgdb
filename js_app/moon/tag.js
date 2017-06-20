@@ -1,8 +1,10 @@
-'use strict'
+;(function(){
+'use strict';
+
 define([
-		'moon/tag/list-view',
+		'moon/tag/view/list',
 ], function(
-		ListView
+		ListView,
 ) {
 	return Backbone.$.extend({
 		View: {
@@ -11,3 +13,4 @@ define([
 	}, Backbone.Events);
 });
 
+})();

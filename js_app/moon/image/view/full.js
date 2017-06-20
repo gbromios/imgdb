@@ -1,7 +1,15 @@
-'use strict'
-define(
-[        'backbone', 'handlebars', 'moon/query'],
-function( Backbone,   Handlebars,   Query) {
+;(function(){
+'use strict';
+
+define( [
+		'backbone',
+		'handlebars',
+		'moon/query'
+], function(
+		Backbone,
+		Handlebars,
+		Query
+) {
 	return Backbone.View.extend({
 		id: 'full-image',
 		className: 'main-view',
@@ -100,3 +108,5 @@ function( Backbone,   Handlebars,   Query) {
 		}
 	});
 });
+
+})();

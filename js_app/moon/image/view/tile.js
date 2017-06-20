@@ -1,4 +1,6 @@
-'use strict'
+;(function(){
+'use strict';
+
 define(
 [        'backbone', 'handlebars', 'lib/jquery-deparam'],
 function( Backbone,   Handlebars,   deparam ) {
@@ -34,3 +36,5 @@ function( Backbone,   Handlebars,   deparam ) {
 		},
 	});
 });
+
+})();

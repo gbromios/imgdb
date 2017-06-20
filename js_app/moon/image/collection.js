@@ -1,4 +1,5 @@
-'use strict'
+;(function(){
+'use strict';
 
 define(
 [ 'underscore', 'backbone', 'moon/image/model' ],
@@ -190,3 +191,5 @@ function( _, Backbone, Image) {
 
 	});
 });
+
+})();

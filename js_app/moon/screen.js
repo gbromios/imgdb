@@ -1,12 +1,18 @@
-'use strict'
-define(
-[        'jquery', 'underscore', 'backbone'],
-function( $,        _,            Backbone ) {
+;(function(){
+'use strict';
+
+define([
+		'underscore',
+		'backbone'
+], function(
+		_,
+		Backbone
+) {
 	var Screen = function(element){
 
 		this.tileSize = 128; // TODO set this more wisely
 
-		this.$el = $(element || window);
+		this.$el = Backbone.$(element || window);
 
 		Object.defineProperties(this, {
 			width: { get: () => this.$el.width() },
@@ -34,8 +40,8 @@ function( $,        _,            Backbone ) {
 		});
 
 		_.extend(this, Backbone.Events);
-		$(window).on('resize', _.debounce(this._resize.bind(this), 500));
-		$(window).on('DOMMouseScroll mousewheel', this._scroll.bind(this));
+		Backbone.$(window).on('resize', _.debounce(this._resize.bind(this), 500));
+		Backbone.$(window).on('DOMMouseScroll mousewheel', this._scroll.bind(this));
 
 	};
 	Screen.prototype._resize = function() {
@@ -48,3 +54,5 @@ function( $,        _,            Backbone ) {
 	return Screen;
 
 });
+
+})();

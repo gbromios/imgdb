@@ -1,14 +1,15 @@
+;(function(){
 'use strict';
 
 define([
 		'backbone',
 		'underscore',
 		'lib/jquery-deparam'
-],
-function(
+], function(
 		Backbone,
 		_,
-		deparam) {
+		deparam
+) {
 	var Query = function(args, path) {
 		this.args = args || {};
 		this.path = path || '';
@@ -29,7 +30,7 @@ function(
 
 	Query.prototype._isTag = function() {
 		// valid image names are never valid tag names
-		// but the reverse is possible
+		// but the reverse is possible (wait... is it tho?)
 		if (this.isImage) {
 			return false;
 		} else if (this.path.match(/^[\w]{2,39}/)) {
@@ -127,7 +128,7 @@ function(
 		}
 
 		if (!args.count) {
-			args.count = 10;
+			args.count = 100;
 		}
 
 		// args can be overridden if desired. careful about sending count: null
@@ -153,6 +154,9 @@ function(
 	};
 
 	Query.prototype.transform = function(args, path) {
+		if (path === undefined) {
+			path = this.path;
+		}
 		var args = _.extend(this.args, args);
 		return new Query(args, String(path));
 	};
@@ -181,3 +185,5 @@ function(
 	return Query;
 
 });
+
+})();
