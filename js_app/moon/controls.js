@@ -4,15 +4,18 @@
 define([
 		'backbone',
 		'moon/controls/top',
-		'moon/controls/search'
+		'moon/controls/search',
+		'moon/controls/settings'
 ], function(
 		Backbone,
 		Top,
-		Search
+		Search,
+		Settings
 ) {
 	return Backbone.$.extend({
 		Top: Top,
 		Search: Search,
+		Settings: Settings
 	}, Backbone.Events);
 });
 

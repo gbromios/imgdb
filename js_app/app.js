@@ -103,6 +103,11 @@ require([
 
 		Backbone.history.start({pushState: true, root: '/'});
 
+		// TODO - move this into some kind of settings module
+		if (window.localStorage.getItem('dark')) {
+				Backbone.$('#color-scheme').attr('href', '/s/css/color-night.css');
+		}
+
 	});
 
 });

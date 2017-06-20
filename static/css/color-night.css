@@ -1,16 +1,23 @@
 body {
-	color: white;
-	background-color: black;
+  color: white;
+  background-color: black;
 }
-
 #fixed-top-container {
-	background-color: black;
+  background-color: black;
 }
-
-.fa, a {
-	color: white;
+.fa,
+a {
+  color: white;
 }
-
-a:hover, .icon-btn:hover > .fa, h1.hover-label:hover {
-	color: #FEFCD7;
+a:hover,
+.icon-btn:hover > span,
+h1.hover-label:hover {
+  color: #FEFCD7;
+}
+.icon-btn:disabled > span.fa {
+  color: #888888;
+}
+#search-bar,
+#settings {
+  background-color: black;
 }

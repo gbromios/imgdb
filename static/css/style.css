@@ -227,3 +227,25 @@ a.name-link {
   height: 32px;
   width: 256px;
 }
+#settings {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 9002;
+  font-size: 36px;
+}
+#settings > span {
+  /* TODO - properly style these lines */
+  position: relative;
+  top: 4px;
+}
+#settings input {
+  position: relative;
+  top: 7px;
+  font-family: inherit;
+  font-size: 24px;
+  height: 32px;
+  width: 256px;
+}
