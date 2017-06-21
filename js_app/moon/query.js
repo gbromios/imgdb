@@ -4,10 +4,12 @@
 define([
 		'backbone',
 		'underscore',
+		'moon/options',
 		'lib/jquery-deparam'
 ], function(
 		Backbone,
 		_,
+		Options,
 		deparam
 ) {
 	var Query = function(args, path) {
@@ -127,6 +129,10 @@ define([
 			args.tag = this.path
 		}
 
+		if (!args.rudeness) {
+			args.rudeness = Options.nsfw === '0' ? 1 : 2;
+		}
+
 		if (!args.count) {
 			args.count = 100;
 		}
@@ -168,6 +174,7 @@ define([
 		var path = window.location.pathname.replace(/^\/+|\/+$/g, '');
 
 		// some special cases that are not query-able
+		// TODO can get rid of this once I fix how the tag list is displayed
 		if (path === 'tags') {
 			return null;
 		} else if (path === 'tagme') {

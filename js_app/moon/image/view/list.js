@@ -43,10 +43,11 @@ function( Backbone,   Query,        Tile ) {
 			}
 		},
 		render: function() {
-			// show all the images?
 			this.resize();
-			$('.main-view:not(#image-list)').hide();
-			this.$el.show();
+
+			$('.main-view.current-view').removeClass('current-view');
+			this.$el.addClass('current-view');
+
 			return this;
 		},
 		destroy: function(){

@@ -20,8 +20,8 @@ function( Backbone,   Handlebars ){
 				)));
 			}
 
-			$('.main-view:not(#tag-view)').hide();
-			this.$el.show();
+			$('.main-view.current-view').removeClass('current-view');
+			this.$el.addClass('current-view');
 
 			return this;
 		},

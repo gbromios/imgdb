@@ -6,15 +6,24 @@ body {
   background-color: white;
 }
 .fa,
-a {
+a,
+.btn-text {
   color: black;
 }
 a:hover,
 .icon-btn:hover > span,
-h1.hover-label:hover {
+h1.hover-label:hover,
+.settings-btn:hover > span {
   color: #00A1EF;
 }
-.icon-btn:disabled > span.fa {
+.icon-btn:disabled > span.fa,
+.settings-btn:disabled > span {
+  color: #888888;
+}
+.accented {
+  color: #DC3148;
+}
+.grayed-out {
   color: #888888;
 }
 #search-bar,

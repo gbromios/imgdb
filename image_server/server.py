@@ -108,11 +108,19 @@ class ImageHandler(gb.http.Handler):
 	def get_root_page(self):
 		# use a sane default
 		args = self.request_data
+
 		if 'count' not in args:
 			args['count'] = 100 # just a sane default pls
+
+		images = Image.browse(**args)
+		if not images:
+			image_data = '{"items": [], "paging": []}'
+		else:
+			image_data = self.item_json(Image.browse(**args), Image.paging(**args))
+
 		with open(self.app_root + '/static/index.html') as f:
 			document = ( f.read()
-				.replace('[[IMAGES]]', self.item_json(Image.browse(**args), Image.paging(**args)))
+				.replace('[[IMAGES]]', image_data)
 				.replace('[[TAGS]]', self.item_json(Tag.browse()))
 			)
 		return Reply.text(200, document, 'text/html')
@@ -145,10 +153,15 @@ class ImageHandler(gb.http.Handler):
 			if 'rudeness' in args and args['rudeness'] == 0 and not self.allowed:
 				raise Exception('WHY DOST THOU HACKEST MINE SITES')
 
+			images = Image.browse(**args)
+
+			if not images:
+				return Reply.text(404, "No images found for query: " + str(self.request_data))
+
 			return Reply.text(
 				200,
 				json.dumps(dict(
-					data = [i.dict for i in Image.browse(**args)],
+					data = [i.dict for i in images],
 					paging = Image.paging(**args)
 				), indent=2, sort_keys=True),
 				"application/json; charset=utf-8"
@@ -157,12 +170,11 @@ class ImageHandler(gb.http.Handler):
 			return Reply.json(
 				200,
 				dict(
-					data = [i.dict for i in Image.browse(**args)],
+					data = [i.dict for i in images],
 					paging = Image.paging(**args)
 				),
 			)
 
-			return Reply.text(200, self.item_json(Image.browse(**args), escape=False), "application/json; charset=utf-8")
 		except Exception as e:
 			return Reply.text(400, "Bad parameters: " + str(self.request_data) + '\n' + str(e) )
 

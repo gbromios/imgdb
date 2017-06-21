@@ -4,29 +4,35 @@
 define( [
 		'backbone',
 		'handlebars',
-		'moon/query'
+		'moon/query',
+		'moon/options',
 ], function(
 		Backbone,
 		Handlebars,
-		Query
+		Query,
+		Options
 ) {
 	return Backbone.View.extend({
 		id: 'full-image',
 		className: 'main-view',
 		tagName: 'div',
+		template: Handlebars.compile($('#full-image-template').html()),
 		events: {
 			'click #full-image': function(e) { console.log('eat it');},
 			'load #full-image > img': function(e) {
+				// why wont this trigger :(
 				console.log('what gives');
 			}
 		},
 		initialize: function(options) {
 			Backbone.$.extend(this, options);
-			this.template = Handlebars.compile($('#full-image-template').html());
-			// i dont think i can put this under the normal events attribute
+
+			this.img_selector = '#full-image > img';
 
 			this.listenTo(Query, 'goto.moon.img', this.go);
-			this.img_selector = '#full-image > img';
+			this.listenTo(Options, 'setOption.moon', function(opt) {
+				if (opt.key === 'fit') { this.fit(); }
+			});
 
 		},
 		go: function(query) {
@@ -63,49 +69,28 @@ define( [
 
 			console.log(image.width(), this.screen.imageWidth);
 
-			if (image.width() > this.screen.imageWidth) {
+			// TODO clean these conditions up somehow
+			if ((Options.fit === 'fit-both' || Options.fit === 'fit-h') && image.width() > this.screen.imageWidth) {
 				image.css('width', this.screen.imageWidth);
 			}
-			if (image.height() > this.screen.imageHeight) {
+			if ((Options.fit === 'fit-both' || Options.fit === 'fit-v') && image.height() > this.screen.imageHeight) {
 				image.removeAttr('style');
 				image.css('height', this.screen.imageHeight);
 			}
 
 		},
 		render: function() {
-			$('.main-view:not(#full-image)').hide();
+			$('.main-view.current-view').removeClass('current-view');
+			this.$el.empty().addClass('current-view');
 			if (!this.model) {
-				this.$el.empty()
-				// show the loader.
-				return;
+				// show a loading spinny
+			} else {
+				this.$el.empty().append(this.template(this.model.attributes));
+				// TODO tried listening to this using event attribute, but it wont work. fix it.
+				$(this.img_selector).on('load', function(e){ this.fit(); }.bind(this))
 			}
-
-			// TODO check collection to see if there's a next/prev image
-
-			this.$el.empty().append(this.template(this.model.attributes));
-
-			$(this.img_selector).on('load', function(e){ this.fit(); }.bind(this))
-
-			this.$el.show();
 			return this;
 		},
-		loaded: function() {
-			if (!$(this.img_selector).length) {
-				return false;
-			}
-			var img = $(this.img_selector)[0];
-
-			if (!img.complete) {
-				return false;
-			}
-
-			if (typeof img.naturalWidth !== "undefined" && img.naturalWidth === 0) {
-				return false;
-			}
-
-			return true;
-
-		}
 	});
 });
 

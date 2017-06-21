@@ -21,11 +21,6 @@ define([
 		initialize: function(options){
 			Backbone.$.extend(this, options);
 			this.mode = null;
-			this.btn_partial = Handlebars.registerPartial(
-				'control-btn',
-				$('#control-btn-partial').html()
-			);
-
 			this.listenTo(Query, 'goto.moon.img', this.imageMode);
 			this.listenTo(Query, 'goto.moon.list', this.listMode);
 
@@ -60,7 +55,7 @@ define([
 					{ name: 'back', icon: 'times' },
 					{ name: 'prev', icon: 'arrow-left' },
 					{ name: 'next', icon: 'arrow-right' },
-					{ name: 'info', icon: 'info-circle' }
+					{ name: 'info', icon: 'list-alt' }
 				]
 			}));
 		},
@@ -141,8 +136,9 @@ define([
 		},
 		openSearch: function() {
 			var search = new SearchBar({ query: Query.fromLocation() });
+			console.log(search.query, Query.fromLocation())
 			Backbone.$('body').append(search.render());
-			search.$el.find('input').trigger('focus');
+			search.$el.find('input.text-search').trigger('focus');
 		},
 		openSettings: function() {
 			var settings = new Settings();

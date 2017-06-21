@@ -11,23 +11,27 @@ require.config({
 });
 
 require([
-	'underscore',
-	'backbone',
-	'moon/image',
-	'moon/tag',
-	'moon/controls',
-	'moon/query',
-	'moon/screen',
-	'lib/jquery-deparam'
+		'underscore',
+		'backbone',
+		'handlebars',
+		'moon/image',
+		'moon/tag',
+		'moon/controls',
+		'moon/query',
+		'moon/screen',
+		'moon/options',
+		'lib/jquery-deparam'
 ], function (
-	_,
-	Backbone,
-	Image,
-	Tag,
-	Controls,
-	Query,
-	Screen,
-	deparam
+		_,
+		Backbone,
+		Handlebars,
+		Image,
+		Tag,
+		Controls,
+		Query,
+		Screen,
+		Options,
+		deparam
 ) {
 	var Moon = Backbone.Router.extend({
 		initialize: function() {
@@ -46,21 +50,21 @@ require([
 			this.tag_view = new Tag.View.List({
 				tags: this.tags
 			});
-			$('body').append(this.tag_view.$el.hide());
+			$('body').append(this.tag_view.$el);
 
 			// list of current image thumbnails
 			this.list_view = new Image.View.List({
 				images: this.images,
 				screen: screen
 			});
-			$('body').append(this.list_view.$el.hide());
+			$('body').append(this.list_view.$el);
 
 			// for viewing a whole image
 			this.image_view = new Image.View.Full({
 				images: this.images,
 				screen: screen
 			});
-			$('body').append(this.image_view.$el.hide());
+			$('body').append(this.image_view.$el);
 
 			// controls at the top of the screen
 			this.controls = new Controls.Top({
@@ -103,12 +107,18 @@ require([
 
 		Backbone.history.start({pushState: true, root: '/'});
 
-		// TODO - move this into some kind of settings module
-		if (window.localStorage.getItem('dark')) {
-				Backbone.$('#color-scheme').attr('href', '/s/css/color-night.css');
-		}
+		var theme = '/s/css/color-' + Options.theme + '.css';
+		Backbone.$('#color-scheme').attr('href', theme);
 
 	});
+
+	// DEBUG
+	window.options = Options;
+
+	// not sure where the best place is for these since they're used by unrelated views
+	Handlebars.registerPartial('control-btn', $('#control-btn-partial').html());
+	Handlebars.registerPartial('settings-btn', $('#settings-btn-partial').html());
+
 
 });
 

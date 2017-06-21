@@ -59,17 +59,35 @@
 	</script>
 
 	<script id="search-bar-template" type="text/x-handlebars-template">
-		<input type="text" value="{{ . }}">
-		{{> control-btn name="search-submit" icon="search" }}
-		{{> control-btn name="search-clear" icon="times" }}
+		<h1>
+			search
+			<input type="text" class="text-search" value="{{text_search}}">
+			{{>control-btn name="text-search-clear" icon="times" }}
+			</h1>
+		{{#each buttons}}
+			<div class='settings-btn-group'>
+				{{#each . }}{{> settings-btn }}{{/each}}
+			</div>
+			<hr />
+		{{/each}}
 	</script>
 
 	<script id="settings-template" type="text/x-handlebars-template">
-		{{> control-btn name="change-theme" icon="lightbulb-o" }} <span>Change Theme</span>
-		<br>
-		{{> control-btn name="close-settings" icon="times" }} <span>Close Settings</span>
+		<h1>settings</h1>
+		{{#each buttons}}
+			<div class='settings-btn-group'>
+				{{#each . }}{{> settings-btn }}{{/each}}
+			</div>
+			<hr />
+		{{/each}}
 	</script>
 
+	<script id="settings-btn-partial" type="text/x-handlebars-template">
+		<button class="settings-btn btn-{{name}}" value="{{value}}">
+			<span class="fa fa-3x fa-{{icon}}"></span>
+			<span class="btn-text">{{text}}</span>
+		</button>
+	</script>
 
 
 

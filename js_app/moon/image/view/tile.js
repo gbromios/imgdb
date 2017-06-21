@@ -14,6 +14,9 @@ function( Backbone,   Handlebars,   deparam ) {
 			this.template = Handlebars.compile($('#tile-image-template').html());
 		},
 		render: function() {
+			// TODO - since we could theoretically load a lot of these at once, dont
+			// pull the thumbnail until it's on the screen. then, paging might be
+			// completely unnecessary.
 			if (!this.el.innerHTML) {
 				this.setElement(this.template(this.model.attributes));
 			}
