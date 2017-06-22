@@ -1,13 +1,20 @@
-'use strict'
-define(
-//[        'jquery', 'underscore', 'backbone'],
-//function( $,        _,            Backbone ) {
-[        'backbone'],
-function( Backbone ) {
-	return {
-		foo: 'foo',
-		bar: 'bar'
-	}
+;(function(){
+'use strict';
+
+define([
+		'underscore',
+		'backbone',
+		'moon/foo'
+], function(
+		_,
+		Backbone,
+		Foo
+) {
+
+	// ...
+
 });
 
-/*var Moon.Images = ; */
+})();
+
+
