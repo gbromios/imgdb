@@ -24,7 +24,7 @@
 
 	<script id="full-image-template" type="text/x-handlebars-template">
 		<ul class="taglist">{{#each tags}}
-			<a class="moonroute" href="/{{.}}">{{.}}</a>
+			<a href="/{{.}}">{{.}}</a>
 		{{/each}}</ul>
 		<img src="{{link.hash}}">
 	</script>
@@ -37,12 +37,12 @@
 
 	<script id="tag-list-template" type="text/x-handlebars-template">
 		{{#each .}}
-			<a class="moonroute" href="/{{name}}">{{name}}</a>
+			<a href="/{{name}}">{{name}}</a>
 		{{/each}}
 	</script>
 
 	<script id="controls-template" type="text/x-handlebars-template">
-		<a class="main-link moonroute" href="/">{{site_name}}</a>
+		<a class="main-link" href="/">{{site_name}}</a>
 		<div class="btn-group btn-group-list" style="width: 0">
 		{{#each list_buttons}} {{> control-btn}} {{/each}}
 		</div>

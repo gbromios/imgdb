@@ -1,17 +1,23 @@
 ;(function(){
 'use strict';
 
-define(
-[        'backbone', 'handlebars', 'lib/jquery-deparam'],
-function( Backbone,   Handlebars,   deparam ) {
+define([
+		'backbone',
+		'handlebars',
+		'moon/query'
+], function(
+		Backbone,
+		Handlebars,
+		Query
+) {
 	return Backbone.View.extend({
 		className: 'tile',
 		tagName: 'li',
+		template: Handlebars.compile(Backbone.$('#tile-image-template').html()),
 		events: {
 			click: "openImage"
 		},
 		initialize: function() {
-			this.template = Handlebars.compile($('#tile-image-template').html());
 		},
 		render: function() {
 			// TODO - since we could theoretically load a lot of these at once, dont
@@ -23,19 +29,7 @@ function( Backbone,   Handlebars,   deparam ) {
 			return this;
 		},
 		openImage: function(e){
-			var path = '/' + this.model.id;
-			// in list mode there might be a path, if there is, it's the tag
-			var tag = window.location.pathname.replace(/^\/+|\/+$/g, '');
-			var args = deparam(window.location.search.slice(1));
-			if (tag) {
-				args.tag = tag;
-			}
-			delete args.at; // TODO - when i fix paging, this can go away.
-			var search = Backbone.$.param(args);
-			if (search) {
-				path += '?' + search;
-			}
-			window.moon.navigate(path, {trigger: true});
+			Query.fromLocation().toImage(this.model.id).go();
 		},
 	});
 });

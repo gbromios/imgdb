@@ -26,16 +26,21 @@ define([
 
 		},
 		events: {
+			'click .main-link': function(e) {
+				e.preventDefault();
+				// TODO should be a base query that represents the default "/"
+				new Query({}, '').go();
+			},
 			'click .btn-moon': function() {},
 			'click .btn-settings': 'openSettings',
 			'click .btn-search': 'openSearch',
 			'click .btn-tags': function() {
 				// go to the tag list
-				moon.navigate('/tags', {trigger: true});
+				new Query({}, 'tags').go(); // TODO - possibly find a nicer way to do this.
 			},
 			'click .btn-back': function() {
 				// whatever the current address is, turn it to a list-version
-				moon.navigate(Query.fromLocation().listURL(), {trigger: true});
+				Query.fromLocation().toList().go();
 			},
 			'click .btn-prev': 'gotoPrevious',
 			'click .btn-next': 'gotoNext',
@@ -97,9 +102,9 @@ define([
 			}
 		},
 		gotoPrevious: function() {
-			var model = window.moon.image_view.model; // TODO - THIS IS BAD.
+			var model = window.moon.image_view.model; // TODO - THIS IS BAD. would using the path be any better.
 			var image = this.images.prevOf(model);
-			var query = Query.fromLocation();
+			var query = Query.fromLocation(); // this could easily be where we get the image id from
 
 			if (image === null) {
 				// this should never happen
@@ -108,15 +113,15 @@ define([
 				// we need to load this image. probably show the loader imo
 				this.images.getPrevPage({
 					success: function(c, r, o) {
-						window.moon.navigate(query.transform({}, c.prevOf(model).id).imageURL(), {trigger: true});
+						query.toImage(c.prevOf(model)).go();
 					}
 				});
 			} else {
-				window.moon.navigate(query.transform({}, image.id).imageURL(), {trigger: true});
+				query.toImage(image).go();
 			}
 		},
 		gotoNext: function() {
-			var model = window.moon.image_view.model;
+			var model = window.moon.image_view.model; // not ideal, see above.
 			var image = this.images.nextOf(model);
 			var query = Query.fromLocation();
 
@@ -127,11 +132,11 @@ define([
 				// we need to load this image. probably show the loader imo
 				this.images.getNextPage({
 					success: function(c, r, o) {
-						window.moon.navigate(query.transform({}, r.data[0].id).imageURL(), {trigger: true});
+						query.toImage(c.nextOf(model)).go();
 					}
 				});
 			} else {
-				window.moon.navigate(query.transform({}, image.id).imageURL(), {trigger: true});
+				query.toImage(image).go();
 			}
 		},
 		openSearch: function() {

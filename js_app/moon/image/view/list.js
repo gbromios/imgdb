@@ -2,11 +2,19 @@
 'use strict';
 
 define(
-[        'backbone', 'moon/query', 'moon/image/view/tile'],
-function( Backbone,   Query,        Tile ) {
-	return Backbone.View.extend({
+[
+		'backbone',
+		'moon/main-view',
+		'moon/query',
+		'moon/image/view/tile'],
+function(
+		Backbone,
+		MainView,
+		Query,
+		Tile
+) {
+	return MainView.extend({
 		id: 'image-list',
-		className: 'main-view',
 		tagName: 'ul',
 		initialize: function(options) {
 			Backbone.$.extend(this, options);
@@ -44,9 +52,7 @@ function( Backbone,   Query,        Tile ) {
 		},
 		render: function() {
 			this.resize();
-
-			$('.main-view.current-view').removeClass('current-view');
-			this.$el.addClass('current-view');
+			this.show();
 
 			return this;
 		},

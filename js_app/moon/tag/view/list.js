@@ -1,10 +1,16 @@
 ;(function(){
 'use strict';
 
-define(
-[        'backbone', 'handlebars'],
-function( Backbone,   Handlebars ){
-	return Backbone.View.extend({
+define([
+		'backbone',
+		'handlebars',
+		'moon/main-view'
+], function(
+		Backbone,
+		Handlebars,
+		MainView
+) {
+	return MainView.extend({
 		id: 'tag-view',
 		className: 'main-view app-centered',
 		tagName: 'div',
@@ -19,10 +25,7 @@ function( Backbone,   Handlebars ){
 					_.map(this.tags.models, function(t){ return t.attributes  })
 				)));
 			}
-
-			$('.main-view.current-view').removeClass('current-view');
-			this.$el.addClass('current-view');
-
+			this.show();
 			return this;
 		},
 	});

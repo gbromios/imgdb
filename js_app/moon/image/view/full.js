@@ -6,18 +6,24 @@ define( [
 		'handlebars',
 		'moon/query',
 		'moon/options',
+		'moon/main-view',
 ], function(
 		Backbone,
 		Handlebars,
 		Query,
-		Options
+		Options,
+		MainView
 ) {
-	return Backbone.View.extend({
+	return MainView.extend({
 		id: 'full-image',
-		className: 'main-view',
 		tagName: 'div',
 		template: Handlebars.compile($('#full-image-template').html()),
 		events: {
+			'click .taglist > a': function(e) {
+				e.preventDefault();
+				// TODO - meh
+				new Query({}, e.currentTarget.innerHTML).go();
+			},
 			'click #full-image': function(e) { console.log('eat it');},
 			'load #full-image > img': function(e) {
 				// why wont this trigger :(
@@ -80,8 +86,8 @@ define( [
 
 		},
 		render: function() {
-			$('.main-view.current-view').removeClass('current-view');
-			this.$el.empty().addClass('current-view');
+			this.show();
+			this.$el.empty();
 			if (!this.model) {
 				// show a loading spinny
 			} else {

@@ -20,7 +20,6 @@ require([
 		'moon/query',
 		'moon/screen',
 		'moon/options',
-		'lib/jquery-deparam'
 ], function (
 		_,
 		Backbone,
@@ -31,51 +30,56 @@ require([
 		Query,
 		Screen,
 		Options,
-		deparam
 ) {
-	var Moon = Backbone.Router.extend({
-		initialize: function() {
-			var tagData = document.getElementById('tag-data');
-			this.tags = new Backbone.Collection(window.JSON.parse(tagData.innerHTML));
+	var Moon = function(window) {
+		window.moon = this;
+		// start the router.
+		var query = Query.start(window);
+		var screen = new Screen();
 
-			var screen = new Screen();
+		var tagData = document.getElementById('tag-data');
+		this.tags = new Backbone.Collection(window.JSON.parse(tagData.innerHTML));
 
-			var preload = window.JSON.parse(document.getElementById('image-data').innerHTML);
-			this.images = new Image.Collection(preload.items, {
-				paging: preload.paging,
-				query: Query.fromLocation()
-			});
+		var imageData = window.JSON.parse(document.getElementById('image-data').innerHTML);
+		this.images = new Image.Collection(imageData.items, {
+			paging: imageData.paging,
+			query: query
+		});
 
-			// a list of all the tags
-			this.tag_view = new Tag.View.List({
-				tags: this.tags
-			});
-			$('body').append(this.tag_view.$el);
+		// a list of all the tags
+		this.tag_view = new Tag.View.List({
+			tags: this.tags
+		});
+		$('body').append(this.tag_view.$el);
 
-			// list of current image thumbnails
-			this.list_view = new Image.View.List({
-				images: this.images,
-				screen: screen
-			});
-			$('body').append(this.list_view.$el);
+		// list of current image thumbnails
+		this.list_view = new Image.View.List({
+			images: this.images,
+			screen: screen
+		});
+		$('body').append(this.list_view.$el);
 
-			// for viewing a whole image
-			this.image_view = new Image.View.Full({
-				images: this.images,
-				screen: screen
-			});
-			$('body').append(this.image_view.$el);
+		// for viewing a whole image
+		this.image_view = new Image.View.Full({
+			images: this.images,
+			screen: screen
+		});
+		$('body').append(this.image_view.$el);
 
-			// controls at the top of the screen
-			this.controls = new Controls.Top({
-				images: this.images
-			});
-			$('body').append(this.controls.render());
-			// i think this can just go in controls.render()
-			$('.btn-group').hide();
+		// controls at the top of the screen
+		this.controls = new Controls.Top({
+			images: this.images
+		});
+		$('body').append(this.controls.render());
+		// i think this can just go in controls.render()
+		$('.btn-group').hide();
 
-		},
-		routes: { // Query object doesn't really mesh nicely with routes tbh
+		// load this initial query and get things started
+		query.load();
+
+	};
+/*,
+		routes: { // Query object doesn't really mesh nicely with routes tbh, I'm rolling my own.
 			"tags": function () {
 				this.tag_view.render();
 				this.controls.listMode(); // cough
@@ -92,33 +96,25 @@ require([
 				query.go();
 			},
 		}
-	});
+*/
 
 	$(function() {
-		window.moon = new Moon();
-		$(document.body).on('click', '.moonroute', function(e){
-			if (e.metaKey || e.ctrlKey) {
-				return;
-			}
-			e.preventDefault();
-			var path = $(this).attr('href');
-			window.moon.navigate(path, {trigger: true});
-		});
+		// not sure where the best place is for these since they're used by unrelated views
+		Handlebars.registerPartial('control-btn', $('#control-btn-partial').html());
+		Handlebars.registerPartial('settings-btn', $('#settings-btn-partial').html());
 
-		Backbone.history.start({pushState: true, root: '/'});
-
+		// set initial color scheme from settings
 		var theme = '/s/css/color-' + Options.theme + '.css';
 		Backbone.$('#color-scheme').attr('href', theme);
 
+		// initialize app
+		new Moon(window);
+
+		// DEBUG
+		window.options = Options;
+		window.query = Query;
+
 	});
-
-	// DEBUG
-	window.options = Options;
-
-	// not sure where the best place is for these since they're used by unrelated views
-	Handlebars.registerPartial('control-btn', $('#control-btn-partial').html());
-	Handlebars.registerPartial('settings-btn', $('#settings-btn-partial').html());
-
 
 });
 
