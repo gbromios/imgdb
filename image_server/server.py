@@ -205,7 +205,7 @@ class ImageHandler(gb.http.Handler):
 			# i choose this for the default thumb. make it configurable later.
 			return self.image_source.thumb_reply('00739fe818a1a764328371b7bbb2ad072367f1e3')
 
-	@route('GET','/[\d]{3,8}', 20)
+	@route('GET','/[\d]{1,8}', 20)
 	@route('GET','/[^/]+\..{3,4}')
 	@route('GET','/[a-z0-9]{40}')
 	def get_image(self, path = None):
